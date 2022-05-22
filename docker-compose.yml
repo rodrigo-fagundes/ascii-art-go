@@ -1,0 +1,11 @@
+version: '3.9'
+
+services:
+  goapi:
+    build:
+      context: .
+    container_name: goapi
+    ports:
+      - "8080"
+    environment:
+      LOG_LEVEL: DEBUG    
