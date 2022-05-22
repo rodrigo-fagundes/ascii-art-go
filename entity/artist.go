@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"fmt"
 	"image"
 	"image/color"
 	"strings"
@@ -27,7 +28,8 @@ func NewArtist() *Artist {
 	return dali
 }
 
-func (dali *Artist) paint(muse image.Image) {
+func (dali *Artist) Paint(muse image.Image) string {
+	println(fmt.Sprintf("Content: %+v", muse))
 	max := muse.Bounds().Max
 	dali.canvas = dali.getBlankCanvas(max)
 	var wg sync.WaitGroup
@@ -41,6 +43,7 @@ func (dali *Artist) paint(muse image.Image) {
 		}
 	}
 	wg.Wait()
+	return dali.show()
 }
 
 func (dali Artist) getBlankCanvas(max image.Point) [][]string {
@@ -51,7 +54,7 @@ func (dali Artist) getBlankCanvas(max image.Point) [][]string {
 	return cnvs
 }
 
-func (dali Artist) show() string {
+func (dali *Artist) show() string {
 	rows := []string{}
 	for _, row := range dali.canvas {
 		rows = append(rows, strings.Join(row, ""))

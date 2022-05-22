@@ -6,6 +6,17 @@ services:
       context: .
     container_name: goapi
     ports:
-      - "8080"
+      - "8080:8080"
     environment:
-      LOG_LEVEL: DEBUG    
+      LOG_LEVEL: DEBUG
+  
+  postman:
+    image: postman/newman:alpine
+    container_name: postmanTests
+    command:
+      run planet.postman_collection.json -k -r cli,json --reporter-json-export="reports/planet.json"
+    volumes:
+      - ./resources/test/newman:/etc/newman
+      - ./resources/test/images:/etc/images
+    depends_on:
+      - "goapi"

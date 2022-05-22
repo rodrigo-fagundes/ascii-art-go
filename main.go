@@ -2,13 +2,20 @@ package main
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"net/http"
 	"os"
 
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
+
+	"github.com/rodrigo-fagundes/ascii-art-go/entity"
+	imagedecoder "github.com/rodrigo-fagundes/ascii-art-go/service/imageDecoder"
 )
+
+var decoderFactory = imagedecoder.NewFactory()
+var michelangelo = entity.NewArtist()
 
 func init() {
 	// Setting up log level for the entire service
@@ -27,17 +34,20 @@ func init() {
 func main() {
 	r := gin.Default()
 	// TODO - In a real service, also set up an agent to send telemetry data for profiling and performance metrics
-	r.GET("/artify", func(c *gin.Context) {
-		file, header, err := c.Request.FormFile("file")
-		defer file.Close()
+	r.GET("/probe/liveness", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{"message": "I'm alive!"})
+	})
+	r.POST("/artify", func(c *gin.Context) {
+		file, _, err := c.Request.FormFile("file")
 		if err != nil {
-			msg := "Failed getting file from request!"
+			msg := "Please, provide an image."
 			log.Error(err, msg)
 			c.JSON(
 				http.StatusBadRequest,
 				gin.H{"message": msg},
 			)
 		}
+		defer file.Close()
 
 		buf := bytes.NewBuffer(nil)
 		if _, err := io.Copy(buf, file); err != nil {
@@ -49,10 +59,26 @@ func main() {
 			)
 		}
 
-		decoder := imagedecoder.NewFactory().build(http.DetectContentType(buf.Bytes()))
-		c.JSON(200, gin.H{
-			"message": "pong",
-		})
+		decoder, errDecFac := decoderFactory.Build(http.DetectContentType(buf.Bytes()))
+		if errDecFac != nil {
+			c.JSON(
+				http.StatusBadRequest,
+				gin.H{"message": errDecFac.Error()},
+			)
+		}
+
+		img, errDec := decoder.Decode(file)
+		if errDec != nil {
+			msg := "Failed decoding image!"
+			log.Error(errDec, msg)
+			c.JSON(
+				http.StatusBadRequest,
+				gin.H{"message": msg},
+			)
+		}
+		println(fmt.Sprintf("Content: %+v", img))
+		result := michelangelo.Paint(img)
+		c.String(http.StatusOK, result)
 	})
 	r.Run()
 }

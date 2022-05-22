@@ -4,22 +4,25 @@ import (
 	"errors"
 	"image"
 	"mime/multipart"
+
+	log "github.com/sirupsen/logrus"
 )
 
 type IDecoder interface {
-	decode(file multipart.File) (image.Image, error)
+	Decode(file multipart.File) (image.Image, error)
 }
 
 type factory struct{}
 
-func (fac factory) NewFactory() *factory {
+func NewFactory() *factory {
 	return new(factory)
 }
 
-func (fac factory) build(contentType string) (IDecoder, error) {
+func (fac factory) Build(contentType string) (IDecoder, error) {
 	switch contentType {
-	case "png":
+	case "image/png":
 		return NewPngDecoder(), nil
 	}
+	log.Warnf("Someone tried to send an unsupported file with the type %s", contentType)
 	return nil, errors.New("File type not supported")
 }

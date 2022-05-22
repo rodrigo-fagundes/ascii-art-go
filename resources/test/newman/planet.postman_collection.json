@@ -1,0 +1,164 @@
+{
+	"info": {
+		"_postman_id": "e6b8b988-4724-499c-b23d-ebd88adabc4f",
+		"name": "planet",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Liveness Probe",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "goapi:8080/probe/liveness",
+					"host": [
+						"goapi"
+					],
+					"port": "8080",
+					"path": [
+						"probe",
+						"liveness"
+					]
+				},
+				"description": "This is a liveness probe that only assess if the API is running. It could be used by k8s cluster do determine the health of the API (livenessProbe)."
+			},
+			"response": []
+		},
+		{
+			"name": "Invoking artify without image",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							"pm.test(\"Error message is as expected\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.message).to.eql(\"Please, provide an image.\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": [],
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "goapi:8080/artify",
+					"host": [
+						"goapi"
+					],
+					"port": "8080",
+					"path": [
+						"artify"
+					]
+				},
+				"description": "Testing if the API reject when no image is set."
+			},
+			"response": []
+		},
+		{
+			"name": "Invoking artify with unsupported image",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							"pm.test(\"Error message is as expected\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.message).to.eql(\"File type not supported\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/etc/images/pyramids.jpeg"
+						}
+					]
+				},
+				"url": {
+					"raw": "goapi:8080/artify",
+					"host": [
+						"goapi"
+					],
+					"port": "8080",
+					"path": [
+						"artify"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Invoking artify",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/etc/images/planet_logo.png"
+						}
+					]
+				},
+				"url": {
+					"raw": "goapi:8080/artify",
+					"host": [
+						"goapi"
+					],
+					"port": "8080",
+					"path": [
+						"artify"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

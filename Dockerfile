@@ -25,16 +25,14 @@ RUN adduser -DH serviceuser \
 #######################################################
 
 # Let's start from zero
-FROM scratch
+# TODO - Change to scratch
+FROM alpine
 
 # Yeah, this is us! Always happy to help.
 LABEL maintainer=rmfagundes@gmail.com
 
 # Let's copy our app binary
 COPY --from=builder /go/bin/service /bin/service
-
-# Let's make the hacker life harder
-USER serviceuser
 
 # Let's start our app as entry poing
 ENTRYPOINT ["service"]
