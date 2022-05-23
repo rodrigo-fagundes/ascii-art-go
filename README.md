@@ -23,6 +23,12 @@ Alternatively Look for the files in `bin`. Run the one corresponding to your env
 ./ascii-art-<os>
 ```
 
+# Dependencies
+
+- GIN (github.com/gin-gonic/gin) - REST-API library largely used in the community. Used for its simplicity and familiarity.
+- Logrus (github.com/sirupsen/logrus) - Log handler with multiple formatting options and context enriching. Also largely used, it can be used in conjunction with agents from log aggregation tools.
+- image - Commonly used for image manipulation.
+
 # Scaling considerations
 
 ## Independence from cloud provider
