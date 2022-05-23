@@ -4,10 +4,8 @@ import (
 	"bytes"
 	"image"
 	_ "image/png"
-	"mime/multipart"
 
 	log "github.com/sirupsen/logrus"
-	"github.com/vincent-petithory/dataurl"
 )
 
 type pngDecoder struct {
@@ -18,14 +16,8 @@ func NewPngDecoder() pngDecoder {
 	return *new(pngDecoder)
 }
 
-func (svc pngDecoder) Decode(file multipart.File) (image.Image, error) {
-	// FIXME - Errors converting multipart into image.
-	imgDecoded, errDecFromURL := dataurl.Decode(file)
-	if errDecFromURL != nil {
-		log.Error(errDecFromURL, " - Failed decoding image!")
-		return nil, errDecFromURL
-	}
-	img, _, errImageDecode := image.Decode(bytes.NewReader(imgDecoded.Data))
+func (svc pngDecoder) Decode(content []byte) (image.Image, error) {
+	img, _, errImageDecode := image.Decode(bytes.NewReader(content))
 	if errImageDecode != nil {
 		log.Error(errImageDecode, " - Failed decoding image!")
 		return nil, errImageDecode

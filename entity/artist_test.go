@@ -29,7 +29,6 @@ func TestDaliArtPng(t *testing.T) {
 	// Running the entity
 	michelangelo := NewArtist()
 	result := michelangelo.Paint(image)
-	println(result)
 	if result != string(expF) {
 		t.Fail()
 	}

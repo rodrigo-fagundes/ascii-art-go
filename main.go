@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -67,7 +66,7 @@ func main() {
 			)
 		}
 
-		img, errDec := decoder.Decode(file)
+		img, errDec := decoder.Decode(buf.Bytes())
 		if errDec != nil {
 			msg := "Failed decoding image!"
 			log.Error(errDec, msg)
@@ -76,7 +75,7 @@ func main() {
 				gin.H{"message": msg},
 			)
 		}
-		println(fmt.Sprintf("Content: %+v", img))
+
 		result := michelangelo.Paint(img)
 		c.String(http.StatusOK, result)
 	})

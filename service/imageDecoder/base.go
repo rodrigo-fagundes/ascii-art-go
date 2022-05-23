@@ -3,13 +3,12 @@ package imagedecoder
 import (
 	"errors"
 	"image"
-	"mime/multipart"
 
 	log "github.com/sirupsen/logrus"
 )
 
 type IDecoder interface {
-	Decode(file multipart.File) (image.Image, error)
+	Decode(content []byte) (image.Image, error)
 }
 
 type factory struct{}
