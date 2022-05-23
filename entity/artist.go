@@ -18,7 +18,8 @@ type Artist struct {
 // @return 		Artist			Artist entity instance.
 func NewArtist() *Artist {
 	/** TODO - In a future version, I'd change the attributes into parameters
-	 * 		  or env variables, depending on how flexible the team wants to be.
+	 *         (passed in the request form) or env variables, depending on
+	 *         how flexible the team wants to be.
 	 **/
 	dali := new(Artist)
 	dali.ramp = ".@#+=" // "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,"^`'."

@@ -1,6 +1,8 @@
 # ascii-art-go
 ASCII Art in Golang
 
+_Future improvements can be found marked as **TODO** comments for now. In the future, move them to github issues._
+
 # How to run
 
 Once you run, the service will be available on port 8080 in your localhost. To test, I recommend using postman. Send a request to `localhost:8080/artify` with a form-data containing an image in the `file` key to get the art.
