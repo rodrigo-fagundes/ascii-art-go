@@ -1,7 +1,6 @@
 package entity
 
 import (
-	"fmt"
 	"image"
 	"image/color"
 	"strings"
@@ -22,14 +21,14 @@ func NewArtist() *Artist {
 	 * 		  or env variables, depending on how flexible the team wants to be.
 	 **/
 	dali := new(Artist)
-	dali.ramp = "@#+=." // "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,"^`'."
+	dali.ramp = ".@#+=" // "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,"^`'."
 	dali.scaleX = 32
 	dali.scaleY = 16
 	return dali
 }
 
 func (dali *Artist) Paint(muse image.Image) string {
-	println(fmt.Sprintf("Content: %+v", muse))
+	// println(fmt.Sprintf("Content: %+v", muse))
 	max := muse.Bounds().Max
 	dali.canvas = dali.getBlankCanvas(max)
 	var wg sync.WaitGroup
@@ -37,7 +36,7 @@ func (dali *Artist) Paint(muse image.Image) string {
 		for x := 0; x < max.X; x += dali.scaleY {
 			wg.Add(1)
 			go func(x, y, iterX, iterY int) {
-				dali.canvas[y][x] = string(dali.ramp[len(dali.ramp)*dali.avgPixel(muse, x, y)/65536])
+				dali.canvas[y/dali.scaleX][x/dali.scaleY] = string(dali.ramp[len(dali.ramp)*dali.avgPixel(muse, x, y)/65536])
 				wg.Done()
 			}(x, y, x/dali.scaleY, y/dali.scaleX)
 		}
@@ -48,8 +47,8 @@ func (dali *Artist) Paint(muse image.Image) string {
 
 func (dali Artist) getBlankCanvas(max image.Point) [][]string {
 	cnvs := [][]string{}
-	for len(cnvs) < max.Y {
-		cnvs = append(cnvs, make([]string, max.X))
+	for len(cnvs) <= max.Y/dali.scaleX {
+		cnvs = append(cnvs, make([]string, max.X/dali.scaleY+1))
 	}
 	return cnvs
 }
